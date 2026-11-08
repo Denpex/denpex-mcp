@@ -1,0 +1,73 @@
+{
+  "name": "denpex-mcp",
+  "version": "0.2.41",
+  "description": "Denpex MCP server, diagnose GPU/ML training failures (CUDA OOM, NCCL timeouts, Xid faults, NaN loss) from Claude Desktop, Cursor, or Claude Code, with optional explicit zero-egress mode.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Denpex",
+  "homepage": "https://denpex.com/docs/integrations",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Denpex/gpu-failure-cheatsheet.git"
+  },
+  "bugs": {
+    "url": "https://denpex.com/contact",
+    "email": "support@denpex.com"
+  },
+  "bin": {
+    "denpex-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist/index.js",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "denpex",
+    "gpu",
+    "cuda",
+    "nccl",
+    "pytorch",
+    "ml-ops",
+    "diagnosis"
+  ],
+  "scripts": {
+    "bundle:patterns": "node scripts/bundle-patterns.cjs",
+    "prebuild": "node ../scripts/sync-diagnostic-assets.mjs && node ../scripts/sync-client-release-identities.mjs mcp && node ../scripts/gen-canonical-offline-engine.mjs && node scripts/bundle-patterns.cjs",
+    "build": "tsup",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build && npm run audit:runtime",
+    "audit:runtime": "npm audit --omit=dev",
+    "dev": "tsup --watch",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --config vitest.config.ts",
+    "test:stdio": "node scripts/stdio-smoke.mjs",
+    "test:coverage": "vitest run --config vitest.config.ts --coverage",
+    "test:watch": "vitest --config vitest.config.ts",
+    "inspector": "npx @modelcontextprotocol/inspector node dist/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.20",
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.3",
+    "vitest": "^3.2.6"
+  },
+  "overrides": {
+    "esbuild": ">=0.28.1",
+    "fast-uri": ">=3.1.6",
+    "hono": ">=4.12.34",
+    "ip-address": ">=10.5.0",
+    "nanoid": "3.3.18"
+  }
+}
