@@ -1,6 +1,6 @@
 {
   "name": "denpex-mcp",
-  "version": "0.2.41",
+  "version": "0.2.42",
   "description": "Denpex MCP server, diagnose GPU/ML training failures (CUDA OOM, NCCL timeouts, Xid faults, NaN loss) from Claude Desktop, Cursor, or Claude Code, with optional explicit zero-egress mode.",
   "type": "module",
   "license": "MIT",
