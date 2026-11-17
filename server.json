@@ -1,33 +1,36 @@
 {
-  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.Denpex/denpex-mcp",
-  "description": "Diagnose GPU and ML training failures (CUDA OOM, NCCL timeouts, Xid faults, Slurm, vLLM) locally or via cloud.",
-  "status": "active",
+  "title": "Denpex",
+  "description": "Diagnose GPU and ML training failures (CUDA OOM, NCCL timeouts, Xid faults) locally or via cloud.",
+  "websiteUrl": "https://denpex.com/docs/integrations",
   "repository": {
     "url": "https://github.com/Denpex/denpex-mcp",
     "source": "github"
   },
-  "version_detail": {
-    "version": "0.2.41"
-  },
+  "version": "0.2.45",
   "packages": [
     {
-      "registry_name": "npm",
-      "name": "denpex-mcp",
-      "version": "0.2.41",
-      "runtime_hint": "npx",
-      "environment_variables": [
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "denpex-mcp",
+      "version": "0.2.45",
+      "runtimeHint": "npx",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
         {
           "name": "DENPEX_API_KEY",
           "description": "Optional Denpex API key (dpx_...). Omit for offline zero-egress mode.",
-          "is_required": false,
-          "is_secret": true
+          "isRequired": false,
+          "isSecret": true
         },
         {
           "name": "DENPEX_OFFLINE_ONLY",
           "description": "Set to 1 to enforce strict zero-egress offline diagnosis.",
-          "is_required": false,
-          "is_secret": false
+          "isRequired": false,
+          "isSecret": false
         }
       ]
     }

@@ -25,6 +25,44 @@ function bullets(title: string, items: string[]): string[] {
 }
 
 export function registerFleetTools(server: McpServer, ctx: ToolContext): void {
+  server.registerTool(
+    "fleet_diagnostic",
+    {
+      title: "Analyze GPU fleet tool output",
+      description: "Analyze output from a GPU fleet tool (gpud, gpu-burn/DCGM, nvbandwidth/perftest, py-spy, nvitop/nvtop, HTA traces, genai-perf/vLLM bench, hwloc/lstopo, LBNL NHC, SuperBench, dynolog, memray/scalene, hf-mem/torchsnapshot, nccl-tests). Leave toolId as \"auto\" to detect the tool from the output. Needs a Denpex API key: Team and higher plans cover all 14 tools, Free covers 05-nvitop-nvtop, 08-hwloc-lstopo and 13-hf-mem-snapshot. For crash logs use diagnose_crash instead. Use the local Denpex CLI for files that must stay on the host. The report is advisory.",
+      annotations: { readOnlyHint: true, openWorldHint: true },
+      inputSchema: {
+        toolId: z.enum([
+          "auto",
+          "01-gpud", "02-gpu-burn-dcgm", "03-nvbandwidth-perftest", "04-py-spy-ranks",
+          "05-nvitop-nvtop", "06-hta-trace", "07-genai-perf-vllm", "08-hwloc-lstopo",
+          "09-lbnl-nhc", "10-superbench-chs", "11-dynolog", "12-memray-scalene",
+          "13-hf-mem-snapshot", "14-nccl-tests-npd",
+        ]).default("auto").describe("Which tool produced the output; \"auto\" detects it."),
+        input: z.string().min(1).describe("Raw tool output or a JSON document as text."),
+      },
+      outputSchema: {
+        toolId: z.string(),
+        mode: z.string().optional(),
+        detected: z.boolean().optional(),
+        report: z.record(z.string(), z.unknown()),
+      },
+    },
+    async ({ toolId = "auto", input }) => {
+      if (ctx.config.local) return toolText("Cloud diagnostics are disabled in local mode. Use the Denpex CLI on this host.", true);
+      const body = { toolId, input: applyPrivacy(input, ctx.config.privacy) };
+      if (Buffer.byteLength(JSON.stringify(body)) > 2 * 1024 * 1024) {
+        return toolText("This request exceeds 2 MiB. Trim the input or use the local CLI.", true);
+      }
+      try {
+        const report = await ctx.client.request<Dict>("/api/tools/fleet-diagnostics", { method: "POST", body });
+        return toolResult(JSON.stringify(report, null, 2), report);
+      } catch (error) {
+        return toolText(describeError(error), true);
+      }
+    },
+  );
+
   // ── launch_gate ────────────────────────────────────────────────────────────
   //
   // Distinct from `preflight_check` below, and the difference matters enough to
