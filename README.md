@@ -183,3 +183,10 @@ during `npm run build`, never hand-edit either artifact.
 | **NVIDIA Xid Reference** | Hardware vs software Xid fault routing table | [denpex.com/xid](https://denpex.com/xid) |
 | **Release Changelog** | Platform, agent, SDK, and extension release notes | [denpex.com/changelog](https://denpex.com/changelog) |
 
+## Free Web Calculators & Xid Reference
+
+- **63-Model GQA/MLA LLM VRAM Calculator:** [denpex.com/tools/vram-calculator](https://denpex.com/tools/vram-calculator)
+- **GRPO / RLHF VRAM Calculator (verl / vLLM):** [denpex.com/tools/grpo-rl-vram-calculator](https://denpex.com/tools/grpo-rl-vram-calculator)
+- **Zero-Upload Browser GPU Log Analyzer:** [denpex.com/tools/gpu-log-analyzer](https://denpex.com/tools/gpu-log-analyzer)
+- **NVIDIA Xid Error Directory:** [denpex.com/xid](https://denpex.com/xid)
+
