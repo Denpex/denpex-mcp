@@ -36,4 +36,5 @@ export const SERVER_NAME = "denpex";
 // 0.2.38: aligns the free/no-key MCP server with the Open VSX extension (local-first canonical offline diagnosis, local follow-ups via `ask_followup`, automatic local fallback on anonymous cloud 401/403/429, and the Cloud Deep Reasoning / 30-Day Free Team Trial callout).
 // 0.2.41: adds repository metadata and official Denpex ecosystem documentation links.
 // 0.2.45: adds `mcpName` so the official MCP Registry can verify npm ownership; no engine change.
-export const SERVER_VERSION = "0.2.45";
+// 0.2.46: synchronize r4 canonical offline engine and expose discriminatingTest / falsePaths in MCP output.
+export const SERVER_VERSION = "0.2.46";

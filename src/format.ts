@@ -121,6 +121,8 @@ export interface DiagnosisView {
   rankedHypotheses: RankedHypothesis[];
   alternatives: DiagnosisAlternative[];
   causationChain: CausationEvent[];
+  discriminatingTest?: { name?: string; goal?: string; steps?: string[]; captureFields?: string[] } | null;
+  falsePaths: string[];
   communityRefs: DiagnosisRef[];
   researchRefs: DiagnosisRef[];
   originNote?: string | null;
@@ -170,6 +172,39 @@ function str(v: unknown): string | null {
 
 function objArray<T>(v: unknown): T[] {
   return Array.isArray(v) ? (v.filter((x) => x && typeof x === "object") as T[]) : [];
+}
+
+function falsePathStrings(v: unknown): string[] {
+  if (!Array.isArray(v)) return [];
+  return v
+    .map((item) => {
+      if (typeof item === "string") return item.trim();
+      if (item && typeof item === "object") {
+        const fp = item as { action?: unknown; reason?: unknown };
+        const action = typeof fp.action === "string" ? fp.action.trim() : "";
+        const reason = typeof fp.reason === "string" ? fp.reason.trim() : "";
+        if (!action || action === "[object Object]") return "";
+        return reason ? `${action} (${reason})` : action;
+      }
+      return "";
+    })
+    .filter(Boolean);
+}
+
+function readDiscriminatingTest(v: unknown): DiagnosisView["discriminatingTest"] {
+  if (!v || typeof v !== "object" || Array.isArray(v)) return undefined;
+  const dt = v as Record<string, unknown>;
+  const name = str(dt.name);
+  const goal = str(dt.goal);
+  const steps = asArray(dt.steps);
+  const captureFields = asArray(dt.captureFields);
+  if (!name && !goal && steps.length === 0) return undefined;
+  return {
+    ...(name ? { name } : {}),
+    ...(goal ? { goal } : {}),
+    ...(steps.length ? { steps } : {}),
+    ...(captureFields.length ? { captureFields } : {}),
+  };
 }
 
 // WO-3.6: critical → warning → info. Mirrors src/lib/advisory.ts (see the sync test).
@@ -307,6 +342,10 @@ export function viewFromCloud(payload: Record<string, unknown>, note?: string): 
     rankedHypotheses: objArray<RankedHypothesis>(payload.rankedHypotheses),
     alternatives: objArray<DiagnosisAlternative>(fix.alternatives ?? payload.alternatives),
     causationChain: objArray<CausationEvent>(fix.causationChain ?? payload.causationChain),
+    discriminatingTest: readDiscriminatingTest(fix.discriminatingTest ?? payload.discriminatingTest),
+    falsePaths: falsePathStrings(
+      Array.isArray(payload.falsePaths) && payload.falsePaths.length ? payload.falsePaths : fix.falsePaths,
+    ),
     communityRefs: objArray<DiagnosisRef>(payload.communityRefs ?? fix.communityRefs),
     researchRefs: objArray<DiagnosisRef>(payload.researchRefs ?? fix.researchRefs),
     originNote: str(payload.originNote),
@@ -388,6 +427,8 @@ export function viewFromLocal(r: LocalDiagnosis, note?: string): DiagnosisView {
     rankedHypotheses: [],
     alternatives: [],
     causationChain: [],
+    discriminatingTest: readDiscriminatingTest((r as unknown as Record<string, unknown>).discriminatingTest),
+    falsePaths: falsePathStrings((r as unknown as Record<string, unknown>).falsePaths),
     communityRefs: [],
     researchRefs: [],
     resumeFrom: r.resumeFrom ?? null,
@@ -486,6 +527,18 @@ export function renderDiagnosis(v: DiagnosisView): string {
   if (v.contradictions.length) {
     lines.push("", "**Why not the obvious answer (rejected on evidence):**");
     v.contradictions.forEach((c) => lines.push(`- ${c}`));
+  }
+  if (v.discriminatingTest) {
+    lines.push("", `**Discriminating test:** ${v.discriminatingTest.name ?? "Controlled split test"}`);
+    if (v.discriminatingTest.goal) lines.push(`- Goal: ${v.discriminatingTest.goal}`);
+    (v.discriminatingTest.steps ?? []).forEach((s, idx) => lines.push(`${idx + 1}. ${s}`));
+    if (v.discriminatingTest.captureFields?.length) {
+      lines.push(`- Capture fields: ${v.discriminatingTest.captureFields.map((f) => `\`${f}\``).join(", ")}`);
+    }
+  }
+  if (v.falsePaths?.length) {
+    lines.push("", "**Ruled out / false paths:**");
+    v.falsePaths.forEach((fp) => lines.push(`- ${fp}`));
   }
   if (v.secondaryHardwareNote) lines.push("", `**Also found, real but not the root cause:** ${v.secondaryHardwareNote}`);
   if (v.rankedHypotheses.length) {

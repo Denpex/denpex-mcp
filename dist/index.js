@@ -15209,7 +15209,7 @@ function registerPrompts(server) {
 
 // src/version.ts
 var SERVER_NAME = "denpex";
-var SERVER_VERSION = "0.2.45";
+var SERVER_VERSION = "0.2.44";
 
 // src/server.ts
 function createServer() {

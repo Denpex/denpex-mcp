@@ -129,6 +129,13 @@ export const diagnosisOutputShape = {
   rankedHypotheses: z.array(rankedHypothesisSchema),
   alternatives: z.array(alternativeSchema),
   causationChain: z.array(causationEventSchema).describe("ROOT_CAUSE → INTERMEDIATE_CAUSE → DOWNSTREAM_SYMPTOM ordering."),
+  discriminatingTest: z.object({
+    name: z.string().optional(),
+    goal: z.string().optional(),
+    steps: z.array(z.string()).optional(),
+    captureFields: z.array(z.string()).optional(),
+  }).nullable().optional().describe("Controlled split experiment to disambiguate competing root causes."),
+  falsePaths: z.array(z.string()).describe("Already-configured settings or disproven paths not to repeat."),
   communityRefs: z.array(refSchema),
   researchRefs: z.array(refSchema),
   originNote: z.string().nullable().optional().describe("The rank/node that REPORTED the error may not be the one that caused it. Read before draining a node."),

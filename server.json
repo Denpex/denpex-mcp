@@ -8,13 +8,13 @@
     "url": "https://github.com/Denpex/denpex-mcp",
     "source": "github"
   },
-  "version": "0.2.45",
+  "version": "0.2.46",
   "packages": [
     {
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "denpex-mcp",
-      "version": "0.2.45",
+      "version": "0.2.46",
       "runtimeHint": "npx",
       "transport": {
         "type": "stdio"
