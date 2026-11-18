@@ -67,6 +67,7 @@ export interface ClarifyingChoiceView {
 
 export interface DiagnosisView {
   qualityReview?: { status: "needs_review" | "no_flagged_issue"; flags: string[]; verification: "unverified" };
+  headline?: string | null;
   failureType: string;
   /** Calibrated, renderable confidence. null = engine withheld it (low-evidence
       band), render "confidence withheld", never a number. */
@@ -316,6 +317,7 @@ export function viewFromCloud(payload: Record<string, unknown>, note?: string): 
   const advisory = sortAdvisories(objArray<DiagnosisAdvisory>(payload.advisory));
 
   return {
+    headline: str(payload.jobName) ?? str(payload.chatTitle) ?? null,
     failureType: str(meta.failureType) ?? "UNKNOWN",
     confidence: shown === null ? null : Math.round(shown),
     confidenceBand: str(payload.confidenceBand) ?? str(fix.confidenceBand),
@@ -466,6 +468,7 @@ export function renderDiagnosis(v: DiagnosisView): string {
   const confPart = v.confidence === null ? "confidence withheld (low-evidence band, treat as a lead, not a verdict)" : `${v.confidence}% confidence`;
   const tierPart = v.tierLabel && !v.offline ? `  ·  ${v.tierLabel}` : "";
   lines.push(`## ${v.failureType}  ·  ${confPart}${tierPart}${v.offline ? "  ·  (offline)" : ""}`);
+  if (v.headline && v.headline !== v.failureType) lines.push(`**Headline:** ${v.headline}`);
   if (v.note) lines.push(`> ${v.note}`);
   // Only the explicitly enabled legacy compatibility matcher lacks the canonical
   // contradiction graph. Canonical offline answers do not receive this warning.

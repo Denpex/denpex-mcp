@@ -7,6 +7,7 @@ import type { ToolContext } from "./context.js";
 
 import { registerArtifactTools } from './tools/artifacts.js';
 import { registerDiagnose } from "./tools/diagnose.js";
+import { registerDeepResearch } from "./tools/deep-research.js";
 import { registerLookup } from "./tools/lookup.js";
 import { registerCascade } from "./tools/cascade.js";
 import { registerQuota } from "./tools/quota.js";
@@ -36,6 +37,7 @@ export function createServer(): McpServer {
 
   // Core (work offline / on every plan)
   registerDiagnose(server, ctx);
+  registerDeepResearch(server, ctx);
   registerArtifactTools(server);
   registerLookup(server, ctx);
   registerCascade(server, ctx);

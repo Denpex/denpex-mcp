@@ -79,6 +79,7 @@ const controlArmReceiptSchema = z.object({
 /** The shape returned by `diagnose_crash`. Mirrors DiagnosisView in format.ts. */
 export const diagnosisOutputShape = {
   qualityReview: z.object({ status: z.enum(["needs_review", "no_flagged_issue"]), flags: z.array(z.string()), verification: z.literal("unverified") }).optional(),
+  headline: z.string().nullable().optional().describe("Delivered incident headline or title when available."),
   failureType: z.string().describe("The engine's failure class, e.g. GPU_XID_ECC, NCCL_CASCADE, CUDA_OOM."),
   confidence: z
     .number()
