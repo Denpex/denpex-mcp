@@ -16221,7 +16221,8 @@ function createServer() {
 async function main() {
   if (process.argv[2] === "trial") {
     const code = await runTrialCli(process.argv.slice(3));
-    process.exit(code);
+    process.exitCode = code;
+    return;
   }
   const server = createServer();
   const transport = new StdioServerTransport();
@@ -16230,6 +16231,6 @@ async function main() {
 }
 main().catch((err) => {
   console.error("[denpex-mcp] fatal:", err);
-  process.exit(1);
+  process.exitCode = 1;
 });
 //# sourceMappingURL=index.js.map

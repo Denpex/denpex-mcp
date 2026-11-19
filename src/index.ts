@@ -10,7 +10,8 @@ import { runTrialCli } from "./trial.js";
 async function main(): Promise<void> {
   if (process.argv[2] === "trial") {
     const code = await runTrialCli(process.argv.slice(3));
-    process.exit(code);
+    process.exitCode = code;
+    return;
   }
   const server = createServer();
   const transport = new StdioServerTransport();
@@ -20,5 +21,5 @@ async function main(): Promise<void> {
 
 main().catch((err) => {
   console.error("[denpex-mcp] fatal:", err);
-  process.exit(1);
+  process.exitCode = 1;
 });
