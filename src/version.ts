@@ -37,4 +37,5 @@ export const SERVER_NAME = "denpex";
 // 0.2.41: adds repository metadata and official Denpex ecosystem documentation links.
 // 0.2.45: adds `mcpName` so the official MCP Registry can verify npm ownership; no engine change.
 // 0.2.46: synchronize r4 canonical offline engine and expose discriminatingTest / falsePaths in MCP output.
-export const SERVER_VERSION = "0.2.46";
+// 0.2.47: add terminal zero-browser work-email 30-day Team trial onboarding (`npx denpex-mcp trial`) with local ~/.denpex/credentials.json auto-loading.
+export const SERVER_VERSION = "0.2.47";

@@ -1,4 +1,4 @@
 FROM node:22-alpine
 WORKDIR /app
-RUN npm install -g denpex-mcp@0.2.46
+RUN npm install -g denpex-mcp@0.2.47
 ENTRYPOINT ["denpex-mcp"]
