@@ -83,6 +83,8 @@ export interface DiagnosisView {
   fallbackFix?: string | null;
   emergencyFix?: string | null;
   verification?: string | null;
+  verificationCommand?: string | null;
+  rawConfidence?: number | null;
   prevention: string[];
   steps: string[];
   evidence: string[];
@@ -320,6 +322,9 @@ export function viewFromCloud(payload: Record<string, unknown>, note?: string): 
     headline: str(payload.jobName) ?? str(payload.chatTitle) ?? null,
     failureType: str(meta.failureType) ?? "UNKNOWN",
     confidence: shown === null ? null : Math.round(shown),
+    rawConfidence: typeof meta.confidence === "number" && Number.isFinite(meta.confidence)
+      ? Math.round(meta.confidence)
+      : (shown === null ? null : Math.round(shown)),
     confidenceBand: str(payload.confidenceBand) ?? str(fix.confidenceBand),
     tier,
     tierLabel: tierLabel(tier ?? undefined),
@@ -328,6 +333,7 @@ export function viewFromCloud(payload: Record<string, unknown>, note?: string): 
     fallbackFix: str(fix.fallbackAction),
     emergencyFix: str(fix.emergencyAction),
     verification: str(fix.verificationInstructions || fix.verificationCommand),
+    verificationCommand: str(fix.verificationCommand),
     prevention: asArray(fix.prevention),
     steps: asArray(fix.steps),
     evidence: asArray(fix.evidence),

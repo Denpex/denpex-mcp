@@ -87,6 +87,7 @@ export const diagnosisOutputShape = {
     .describe(
       "Calibrated confidence, 0-100. NULL means the engine measured this band's accuracy and declined to state a number, treat the verdict as a lead, not a conclusion. Never substitute a raw score for a null.",
     ),
+  rawConfidence: z.number().nullable().optional().describe("Raw numeric confidence before display-floor withholding."),
   confidenceBand: z.string().nullable().optional().describe("Band name for the confidence, e.g. 'high' / 'low'. Branch on this rather than on the number."),
   tier: z.number().nullable().optional().describe("Which engine tier resolved it: 0 scale detectors, 1 pattern, 1.5 encyclopedia, 1.6 keyword, 2 community, 4 LLM. There is no tier 3."),
   tierLabel: z.string().optional().describe("Human label for `tier`, identical to the one the web console shows."),
@@ -95,6 +96,7 @@ export const diagnosisOutputShape = {
   fallbackFix: z.string().nullable().optional(),
   emergencyFix: z.string().nullable().optional(),
   verification: z.string().nullable().optional().describe("Command that proves the fix worked."),
+  verificationCommand: z.string().nullable().optional().describe("Exact passive verification command when available."),
   resumeFrom: z.string().nullable().optional().describe("Where it is SAFE to resume from. Read resumeSafetyNote before acting on it."),
   prevention: z.array(z.string()),
   steps: z.array(z.string()).describe("The full prescriptive fix ladder, in order."),
