@@ -210,6 +210,31 @@ function readDiscriminatingTest(v: unknown): DiagnosisView["discriminatingTest"]
   };
 }
 
+function readEvidenceRequests(v: unknown): DiagnosisView["evidenceRequests"] {
+  if (!Array.isArray(v)) return [];
+  const out: DiagnosisView["evidenceRequests"] = [];
+  for (const raw of v) {
+    if (!raw || typeof raw !== "object" || Array.isArray(raw)) continue;
+    const r = raw as Record<string, unknown>;
+    const questionId = str(r.questionId) ?? str(r.id) ?? undefined;
+    const optionId = str(r.optionId) ?? str(r.kind) ?? undefined;
+    const label = str(r.label) ?? str(r.ifPresent) ?? undefined;
+    const command = str(r.command) ?? undefined;
+    const why = str(r.why) ?? str(r.reason) ?? undefined;
+    const pasteBack = str(r.pasteBack) ?? str(r.ifAbsent) ?? undefined;
+    if (!questionId && !optionId && !label && !command && !why && !pasteBack) continue;
+    out.push({
+      ...(questionId ? { questionId } : {}),
+      ...(optionId ? { optionId } : {}),
+      ...(label ? { label } : {}),
+      ...(command ? { command } : {}),
+      ...(why ? { why } : {}),
+      ...(pasteBack ? { pasteBack } : {}),
+    });
+  }
+  return out;
+}
+
 // WO-3.6: critical → warning → info. Mirrors src/lib/advisory.ts (see the sync test).
 const ADVISORY_RANK: Record<string, number> = { critical: 0, error: 0, warning: 1, warn: 1, info: 2 };
 /**
@@ -339,7 +364,7 @@ export function viewFromCloud(payload: Record<string, unknown>, note?: string): 
     evidence: asArray(fix.evidence),
     clarifying: asArray(fix.clarifyingQuestions),
     clarifyingChoices: clarificationChoices(fix.clarifyingChoices,fix.clarifyingQuestions),
-    evidenceRequests: objArray<DiagnosisView["evidenceRequests"][number]>(fix.evidenceRequests),
+    evidenceRequests: readEvidenceRequests(fix.evidenceRequests),
     awaitingEvidence: fix.awaitingEvidence === true,
     refinementToken: str(payload.refinementToken) ?? undefined,
     advisories: [

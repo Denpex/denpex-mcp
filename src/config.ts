@@ -22,7 +22,7 @@ const TRUTHY = /^(1|true|yes|on)$/i;
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): DenpexConfig {
   const explicitKey = (env.DENPEX_API_KEY ?? "").trim() || undefined;
-  const shouldCheckFile = env === process.env || Boolean((env.DENPEX_CREDENTIALS_PATH ?? "").trim());
+  const shouldCheckFile = (env === process.env && !env.VITEST) || Boolean((env.DENPEX_CREDENTIALS_PATH ?? "").trim());
   const apiKey = explicitKey ?? (shouldCheckFile ? loadStoredApiKey(env) : undefined);
   const apiUrl = ((env.DENPEX_API_URL ?? "").trim() || "https://api.denpex.com").replace(/\/+$/, "");
   const local = TRUTHY.test((env.DENPEX_LOCAL ?? "").trim());
