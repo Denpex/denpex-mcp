@@ -40,4 +40,5 @@ export const SERVER_NAME = "denpex";
 // 0.2.47: add terminal zero-browser work-email 30-day Team trial onboarding (`npx denpex-mcp trial`) with local ~/.denpex/credentials.json auto-loading.
 // 0.2.48: align offline canonical engine 2026.11.21+parity-fastpath-r2 and full remediation parity formatting.
 // 0.2.49: sync offline canonical engine 2026.11.24+overnight-moat-r15, headline ruling fixes, system-first checks, and comparison-table intake parity.
-export const SERVER_VERSION = "0.2.49";
+// 0.2.50: sync offline canonical engine 2026.11.24+review-quality-r18 and align v1.4.69 client surface release.
+export const SERVER_VERSION = "0.2.50";
